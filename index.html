@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remini Planshet</title>
+    <title>Vector Planshet</title>
     <link rel="shortcut icon" href="1321457.png" />
     <div class="template-container">
     </div>    
@@ -12,14 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure/3.1.0/leaflet-measure.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script
     src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"
     integrity="sha384-8SqKZR7V8uOetpjjbcNJHvwuHpb074WS0UXjCLhzfJUqYn3B/uWx1WVv5mwRp1mV"
     crossorigin="anonymous"
 ></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         /* General Map Styles */
         #map {
@@ -32,93 +33,123 @@
     width: 100%;
     height: 100%;
 }
-
-#map {
-    height: 100%;
+#topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 60px;
+    background-color: #2d3240; /* синий */
+    
+    z-index: 1005;
+}
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px; /* Узкая боковая панель */
+    height: 100%; /* На всю высоту экрана */
+    background-color: #2d3240; /* Темный цвет для панели */
+    z-index: 1000; /* Слои, чтобы быть выше карты */
+}
+.leaflet-control-layers {
+    z-index: 2000; /* Выше, чем topbar */
+    position: relative; /* или absolute, если нужно */
+    top: 60px; /* чтобы слой не перекрывал панель */
+    background-color: #2d3240;
+    color: #c4c4c4;
+}
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(21, 24, 30, 0.85);
+    z-index: 1000;
+    display: none;
+    backdrop-filter: blur(4px);
 }
 
-        /* Modal Background */
-        .modal-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            display: none;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #f7f7f7, #e0e0e0);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1001;
-            max-width: 450px;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .modal h2 {
-            font-size: 24px;
-            color: #333;
-            font-family: 'Roboto', sans-serif;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: 2px solid #ccc;
-            transition: border 0.3s;
-        }
-        input[type="text"]:focus {
-            border-color: #4a90e2;
-            outline: none;
-        }
-        .modal-button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            margin-top: 20px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .modal-button:hover {
-            background-color: #357ab7;
-        }
-        .modal-button:focus {
-            outline: none;
-        }
-        .modal-close {
-            background-color: red;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background: #252b36;
+    padding: 20px 24px;
+    border-radius: 14px;
+    z-index: 1001;
+    max-width: 360px;
+    width: 90%;
+    transition: all 0.35s ease;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.modal.show {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal h2 {
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    background-color: #1e232c;
+    color: #ffffff;
+    border-radius: 8px;
+    border: 2px solid #3a4152;
+}
+
+input[type="text"]:focus {
+    border-color: #4a90e2;
+    background-color: #252b36;
+    outline: none;
+}
+
+.modal-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    margin-top: 20px;
+    background-color: #4674dc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-button:hover {
+    background-color: #6088e7;
+}
+
+.modal-button:focus {
+    outline: none;
+}
+
         /* Сдвигаем контейнер вправо для нужных объектов */
         .shifted-info-container {
-           width: 30px;
-           height: 30px;
+            margin-left: 10px; /* Сдвиг на 20px вправо, можно менять значение */
         }
-        .icon-container .shifted-info-containerr {
+        .shifted-info-containerr {
             margin-right: 70px;
         }
     
         .red-id {
-            color: red;
+            color: rgb(255, 0, 0);
         }
         .blue-id {
-            color: #006aff;
+            color: #006aff; /* Синий цвет для текста */
         }
         
 
@@ -127,7 +158,7 @@
 .red-id .r-container,
 .red-id .rls-container 
 .red-id .icon-container {
-    color: red;
+    color: rgb(255, 0, 0);
 }
 
 .blue-id .label-container,
@@ -148,10 +179,14 @@
         .shifted-id-kinzhal {
             margin-left: 25px;
         }
+        .info-container {
+            line-height: 15px;
+        }
         .label-container {
             font-size: 14px;
             font-weight: 500;
                     font-family: 'Roboto', sans-serif;
+ 
             -webkit-text-stroke-color: black;
         }
         .r-container {
@@ -166,8 +201,9 @@
  
             display: flex;
     flex-direction: column;
+    justify-content: center;
     font-weight: 500;
-   }
+   }    
         .rls-container {
             font-size: 14px;
             display: flex;
@@ -176,10 +212,6 @@
     flex-direction: column;
     justify-content: center;
    }
-   .info-container {
-            line-height: 16.7px;
-            margin-top: 25px;
-        }
         .label1-container {
             font-size: 14px;
             font-family: 'Roboto', sans-serif;
@@ -192,25 +224,25 @@
             font-family: 'Roboto', sans-serif;
  
         }
-        .c-container {
-            white-space: nowrap;
-        }
+
         /* Delete Button */
         #deleteButton {
-            position: absolute;
-            bottom: 30px;
-            left: 10px;
-            background-color: red;
-            color: white;
-            padding: 15px 25px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 1003;
-        }
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    background: transparent;
+    color: white;
+    padding: 15px 25px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    z-index: 1003;
+    text-align: left;
+    padding-left: 7px;
+}
         /* Smooth Transition for Modals */  
         .modal.show {
             display: block;
@@ -227,18 +259,17 @@
         .icon-container {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 13px;
     font-size: 14px;
     position: absolute;
-}       
- .icon-container .icon {
-            width: 27px;
-            height: 27px;
+    white-space: nowrap; /* Убираем перенос текста */
+}
+        .icon-container .icon {
+            width: 34px;
+            height: 34px;
             object-fit: cover;
             display: block;
-            margin-bottom: 25px;
         }
-
 
         /* Modal Input Background for Target Coordinates */
         #targetModal {
@@ -252,20 +283,33 @@
             z-index: 1000;
         }
         #alert-menu {
-            background: white;
-            padding: 15px;
-            display: none;
-            border: 2px solid #333;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            width: 200px;
-            font-family: Arial, sans-serif;
-        }
+            background: #3a4153;
+    padding: 20px;
+    display: none; /* Изначально скрыто */
+    border: none;
+    width: 250px;
+    height: 1103px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #c4c4c4;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 50px; /* Смещаем меню вниз относительно кнопки */
+    left: 39px; /* Открывается справа от sidebar */
+    margin-left: 1px; /* Немного отступа от sidebar */
+}
+
+#alert-menu:hover {
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+}
+.leaflet-control-attribution {
+    display: none !important;
+}
         #alert-menu h3 {
             margin: 0 0 10px;
             text-align: center;
             font-size: 16px;
-            color: #333;
+            color: #c4c4c4;
         }
         #alert-menu div {
             margin-bottom: 5px;
@@ -274,18 +318,17 @@
             margin-right: 5px;
         }
         button#alert-button {
-            background: #ff0800;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            width: 150px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        button#alert-button:hover {
-            background: #c9302c;
-        }
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 150px;
+    border-radius: 5px;
+    text-align: left; /* Текст слева */
+    padding-left: 7px;
+    margin-top: 50px; /* Отступ сверху, чтобы кнопка не была прямо у верхнего края */
+}
         #overlay {
     position: absolute;
     top: 0;
@@ -339,58 +382,96 @@
 
         /* Стили меню */
         #passwordContainer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0033cc, #0066ff); /* Градиент синего */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            text-align: center;
-            z-index: 1005;
-        }
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #252b36; /* Градиент синего */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        text-align: center;
+        z-index: 1010;
+    }
 
-        #passwordContainer h1 {
-            font-size: 28px;
-            margin-bottom: 120px;
-            letter-spacing: 1px;
-        }
+    #passwordContainer img {
+        width: 250px;
+        height: 25x;
+    }
 
-        #passwordInput {
-            width: 250px;
-            padding: 12px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+    #loginInput, #passwordInput {
+        padding: 20px 15px;
+        font-size: 14px;
+        width: 400px;
+        height: 30px;
+        border: none;
+        border-radius: 4px;
+        background-color: #3d4558;
+        color: #fff;
+        text-align: left;
+        background-position: 15px center;
+        background-repeat: no-repeat;
+        background-size: 25px;
+    }
 
-        #submitButton {
-            padding: 12px 25px;
-            font-size: 18px;
-            background: #ffffff;
-            color: rgb(0, 0, 0);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    #loginInput::placeholder,
+    #passwordInput::placeholder {
+        color: #b0b3b8;
+    }
+    #submitButton {
+    padding: 12px 40px; /* помягче */
+    font-size: 14px;
+    background-color: #4674dc;
+    color: white;
+    border: none;
+    cursor: pointer;    
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: 0px;
+}
 
-        #submitButton:hover {
-            background: #9d9d9d;
-        }
+    #submitButton:hover {
+        background-color: #5c90de;
+    }
+
+    #submitButton:active {
+        background-color: #0033cc;
+        transform: scale(0.98);
+    }
+        #menu-icon {
+    position: absolute;
+    top: 17px;  /* Располагаем сверху */
+    left: 20px; /* Иконка будет слева */
+    width: 170px;  /* Задаем размер иконки (по желанию) */
+    height: 25px; /* Задаем размер иконки (по желанию) */
+}
+.inputWrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Расстояние между логином и паролем */
+        margin-bottom: 205px; /* Отступ вниз до кнопки */
+    }
     </style>
 </head>
 <body>
+    <div id="passwordContainer">    
+        <img src="iconpas.png">
+        <div class="inputWrapper">
+            <input type="text" id="loginInput" placeholder="Логин">
+            <input type="password" id="passwordInput" placeholder="Пароль">
+            <button id="submitButton">Войти в систему</button>
+        </div>
+    </div>
+    <div id="sidebar"></div>
+    <div id="leaflet-control-layers"></div>
+    <div id="topbar">
+        <img src="icon.png" alt="Icon" id="menu-icon" />
+    </div>
     <div id="map"></div>
     <div class="overlay"></div>
-    <button id="deleteButton"><i class="fas fa-trash-alt"></i> Удалить объект</button>
+    <button id="deleteButton"><i class="fas fa-trash-alt"></i></button>
 <!-- Модальное окно для отображения координат -->
 <div class="modal" id="coordinatesModal">
     <h2>Координаты:</h2>
@@ -415,9 +496,8 @@
         <button class="modal-button" id="targetSubmit"><i class="fas fa-check"></i> Подтвердить</button>
         <button class="modal-button modal-close" id="targetClose"><i class="fas fa-times"></i> Закрыть</button>
     </div>
-    
     <div id="alert-container">
-        <button id="alert-button"><i class="fas fa-bell"></i> Дать тревогу</button>
+        <button id="alert-button"><i class="fas fa-bell"></i></button>
         <div id="alert-menu">
             <h3>Дать тревогу</h3>
             <div>
@@ -512,6 +592,21 @@
     crossorigin="anonymous"
 ></script>
     <script>
+            const correctLogin = "admin";  // Указываем правильный логин
+    const correctPassword = "12339321";  // Указываем правильный пароль
+
+    document.getElementById("submitButton").addEventListener("click", function() {
+        let userLogin = document.getElementById("loginInput").value;
+        let userPassword = document.getElementById("passwordInput").value;
+        
+        if (userLogin === correctLogin && userPassword === correctPassword) {
+            document.getElementById("passwordContainer").style.display = "none"; // Прячем форму
+            document.getElementById("map").style.display = "block"; // Показываем карту
+            initMap(); // Загружаем карту
+        } else {
+            alert("Неверный логин или пароль!");
+        }
+    });
         const map = L.map('map', {
             zoomControl: false
         }).setView([48.3794, 31.1656], 7);
@@ -556,6 +651,7 @@ var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/a
 const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3']
+        
 });
 
 googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
@@ -586,7 +682,8 @@ var Stadia_OSMBright = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_brigh
 	ext: 'png'
 });
 
-googleStreets.addTo(map);
+// Добавляем стандартную карту по умолчанию
+osmLayer.addTo(map);
 
 // Настройка слоев для переключения
 const baseLayers = {
@@ -761,8 +858,8 @@ updateOverlayFilter();
             let iconUrl;
             let iconClass = 'red-id';
             let shiftedClass = ''
-            let iconSize = ''
             let shiftedClasss = ''
+
             if (speed === 0) {  
     // Если скорость 0, сразу устанавливаем иконку EPVO
     iconUrl = 'EPVO.png'; 
@@ -785,10 +882,6 @@ updateOverlayFilter();
                         </div>
         </div>
     `;
-    // Удаляем маркер через 15 минут (900000 мс)
-setTimeout(() => {
-    marker.remove();
-}, 1200000);
 } else {
     // Условия для выбора иконки в зависимости от скорости
     if (speed >= 120 && speed <= 121) {
@@ -804,7 +897,7 @@ setTimeout(() => {
     } else if (speed >= 1000 && speed <= 1001) {
         iconUrl = 'x101.png';
         shiftedClass = 'shifted-info-container';
-    } else if (speed >= 450 && speed <= 451) {
+    } else if (speed >= 898 && speed <= 899) {
         iconUrl = 'kab.png';
     } else if (speed >= 11024 && speed <= 11025) {
         shiftedClass = 'shifted-info-container';
@@ -863,7 +956,7 @@ setTimeout(() => {
         shiftedClass = 'shifted-info-container';
         iconClass = 'blue-id';
     } else if (speed >= 900 && speed <= 901) {
-        iconUrl = 'iskander-k.png';
+        iconUrl = 'iskanderk.png';
         shiftedClass = 'shifted-info-container';
     } else if (speed >= 2519 && speed <= 2520) {
         iconUrl = 'kh31.png';
@@ -917,20 +1010,20 @@ setTimeout(() => {
         iconUrl = 'neyst tip.png';
     }
 
-
     // Основной шаблон для всех остальных случаев
     iconHtml = `
         <div class="icon-container ${iconClass}">
             <img src="${iconUrl}" class="icon" />
              <div class="info-container ${shiftedClass} ${shiftedClasss}">
-                <span class="label-container ${iconClass}">${objectId}п</span>
-                <div class="c-container">
-                 <span class="r-container ${iconClass}">1 ПП (79) (р)</span>
+                <span class="label-container ${iconClass}">${objectId}р</span>
+                 <span class="r-container ${iconClass}">ПП·</span>
+                <span class="rls-container ${iconClass}">${getRlsForObject(objectId, iconUrl)}</span> <!-- РЛС --> 
             </div>
         </div>
-                </div>
     `;
 }
+
+
                     const icon = L.divIcon({
                         className: 'icon',
                         html: iconHtml,
@@ -1009,7 +1102,10 @@ marker.on('click', function() {
 
 
 
-                    // Проверяем, если скорость больше 0, то поворачиваем иконку
+                    // marker.objectId = objectId;
+markers.push(marker);
+
+// Проверяем, если скорость больше 0, то поворачиваем иконку
 if (speed > 0) {
     const course = calculateCourse(lat, lng, targetLat, targetLng) * (180 / Math.PI);
     const angle = (course + 360) % 360;
@@ -1020,6 +1116,8 @@ if (speed > 0) {
 }
 
 let startTime = null;
+
+
 function updatePosition(timestamp) {                                                                                    
     if (!startTime) startTime = timestamp;
     const elapsedTime = (timestamp - startTime) / 1000; // время в секундах
@@ -1046,8 +1144,7 @@ requestAnimationFrame(updatePosition);
 
                 deleteMode = false;
                 const deleteButton = document.getElementById('deleteButton');
-                deleteButton.style.backgroundColor = 'red';
-                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект';
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
             }
         }
     });
@@ -1061,11 +1158,9 @@ requestAnimationFrame(updatePosition);
     
     // Изменяем только текст и состояние, оставляем стили без изменений
     if (deleteMode) {
-        this.style.backgroundColor = 'green';
-        this.innerHTML = '<i class="fas fa-check"></i> Выход из режима удаления'; // Изменяем только текст
+        this.innerHTML = '<i class="fas fa-check"></i>'; // Изменяем только текст
     } else {
-        this.style.backgroundColor = 'red';
-        this.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект'; // Изменяем только текст
+        this.innerHTML = '<i class="fas fa-trash-alt"></i>'; // Изменяем только текст
     }
 };
 
@@ -1073,31 +1168,24 @@ requestAnimationFrame(updatePosition);
             event.preventDefault();
             event.returnValue = '';
         });
-        // РЛС для объектов
-        const rlsOptions = [
-    "59H6-E",
-    "Родник",
-    "Роса-РБ-М",
-    "Восток-3D",
-    "5Н84А",
-    "19Ж6М",
-    "Малахит"
-]; // Исключаем "Волга" из общего списка
+// РЛС для объектов
+const rlsOptions = [
+    "79К6",
+    "35Д6М",
+    "Малахіт",
+    "Малахіт", // Увеличиваем вероятность "Малахіт"
+    "Малахіт"
+];
 
 // Функция для выбора РЛС
 function getRlsForObject(objectId, iconUrl) {
-    // Уникальные РЛС для Iskander-M, Tsircon, Kinzhal, Atacms
-    const specialRls = ["iskander.png", "Tsirkon.png", "Kinzhal.png", "atacms.png"];
-    let rls = "Волга"; // по умолчанию для специальных объектов
-
-    if (specialRls.includes(iconUrl)) {
-        return rls; // Возвращаем "Волга" только для специальных объектов
-    } else {
-        // Для остальных объектов выбираем случайную РЛС, исключая "Волга"
-        const randomIndex = Math.floor(Math.random() * rlsOptions.length);
-        return rlsOptions[randomIndex];
-    }
+    // Для всех объектов (включая спецобъекты) выбираем случайную РЛС
+    const randomIndex = Math.floor(Math.random() * rlsOptions.length);
+    return rlsOptions[randomIndex];
 }
+
+let touchTimer;
+
 map.on('contextmenu', function (e) {
     const coords = `${e.latlng.lat}, ${e.latlng.lng}`;
     navigator.clipboard.writeText(coords).then(() => {
@@ -1106,6 +1194,27 @@ map.on('contextmenu', function (e) {
         console.error('Ошибка копирования координат:', err);
     });
 });
+
+map.on('touchstart', function (e) {
+    // Запускаем таймер, чтобы определить долгий клик
+    touchTimer = setTimeout(() => {
+        const latlng = e.latlng;
+        const coords = `${latlng.lat}, ${latlng.lng}`;
+
+        navigator.clipboard.writeText(coords).then(() => {
+            alert(`Координаты скопированы: ${coords}`);
+        }).catch(err => {
+            console.error('Ошибка копирования координат:', err);
+        });
+    }, 800); // Время задержки в миллисекундах (800 мс = долгий клик)
+
+});
+
+map.on('touchend', function (e) {
+    // Если палец поднят до завершения задержки, отменяем таймер
+    clearTimeout(touchTimer);
+});
+
 fetch("front.json")
   .then(response => response.json())
   .then(data => {
@@ -1115,18 +1224,10 @@ fetch("front.json")
         let opacity = 1; // По умолчанию непрозрачность для "неизвестно"
         let fillOpacity = 1; // По умолчанию заливка непрозрачная
 
-        if (feature.properties.name === 'Освобождено') {
-          color = '#0f9d58'
-          opacity = 0.0; // Прозрачность границы
-          fillOpacity = 0.15; // Прозрачность заливки
-        } else if (feature.properties.name === 'Оккупировано') {
-          color = '#a52714'; // Цвет для "Оккупировано"
-          opacity = 0.0
-          fillOpacity = 0.25// Заливка полупрозрачная
-        } else if (feature.properties.name === 'Неизвестно') {
-          color = '#bdbdbd'; // Цвет для "Неизвестно"
-          opacity = 0.1; // Прозрачность границы
-          fillOpacity = 0.1; // Прозрачность заливки
+        if (feature.properties.name === 'Багатокутник 4') {
+          color = '#000000'
+          opacity = 1; // Прозрачность границы
+          fillOpacity = 0.0; // Прозрачность заливки
         }
 
         // Возвращаем стиль с прозрачностью
@@ -1162,7 +1263,7 @@ fetch('trevoga.json')
                 let region = checkbox.id;
                 if (checkbox.checked && regions[region]) {
                     let layer = L.geoJSON(regions[region], {
-                        style: { color: 'red', fillColor: 'red', fillOpacity: 0.2, weight: 0.0 }
+                        style: { color: 'red', fillColor: 'red', fillOpacity: 0.1, weight: 0.6 }
                     }).addTo(map);
                     polygons[region] = layer;
                 } else if (polygons[region]) {
@@ -1194,8 +1295,6 @@ document.getElementById('alert-button').onclick = function() {
     menuVisible = !menuVisible;
     document.getElementById('alert-menu').style.display = menuVisible ? 'block' : 'none';
 };
-
-const iconElement = document.querySelector('.icon-container .icon');
         function getKievTime() {
     const options = {
         timeZone: 'Europe/Kiev',
