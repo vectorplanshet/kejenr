@@ -203,6 +203,7 @@ input[type="text"]:focus {
     flex-direction: column;
     justify-content: center;
     font-weight: 500;
+    color: black;
    }    
         .rls-container {
             font-size: 14px;
@@ -217,12 +218,13 @@ input[type="text"]:focus {
             font-family: 'Roboto', sans-serif;
             font-weight: 450;
             -webkit-text-stroke-color: black;
+            color: black;
         }
         .r1-container {
             font-size: 14px;
             font-weight: 450;
             font-family: 'Roboto', sans-serif;
- 
+            color: black;
         }
 
         /* Delete Button */
@@ -874,10 +876,10 @@ updateOverlayFilter();
         <div class="icon-container ${iconClass}">
             <img src="${iconUrl}" class="icon" />
             <div class="info-container ${shiftedClass} ${shiftedClasss}">
-                <span class="label1-container ${iconClass}">${objectId} ${kievTime}</span>
+                <span class="label1-container ${iconClass}">${objectId1} ${kievTime}</span>
                 <div class="info-container ${shiftedClass} ${shiftedClasss}">
-                <span class="r1-container ${iconClass}">ЕППО</span>
-                <span class="rls1-container ${iconClass}">${objectId1}</span>
+                <span class="r1-container ${iconClass}">EPA</span>
+                <span class="rls1-container ${iconClass}">interesting s</span>
             </div>
                         </div>
         </div>
@@ -1173,8 +1175,13 @@ const rlsOptions = [
     "79К6",
     "35Д6М",
     "Малахіт",
+    "П-18МА",
+    "5Н48А",
+    "П-19МА",
+    "П-36",
     "Малахіт", // Увеличиваем вероятность "Малахіт"
     "Малахіт"
+
 ];
 
 // Функция для выбора РЛС
@@ -1305,7 +1312,7 @@ document.getElementById('alert-button').onclick = function() {
     return new Intl.DateTimeFormat('ru-RU', options).format(new Date());
 }
 
-let objectIdCounter = 564100;
+let objectIdCounter = 44000;
 
 function getNextObjectId() {
     return objectIdCounter++;
